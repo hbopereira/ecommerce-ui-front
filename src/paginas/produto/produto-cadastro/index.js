@@ -12,13 +12,13 @@ export default function ProdutoCadastro() {
         return await ProdutoService.salvarProduto(produto)
             .then(() => {
                 limparCamposFormCadastroProduto()
-            }).catch(erro => {
-                console.log(erro)
+            }).catch((erro) => {
+                alert(JSON.stringify(erro));
             })
     }
 
-    function preecherArrayTabelaPreco(){
-        
+    function preecherArrayTabelaPreco() {
+
     }
 
     function limparCamposFormCadastroProduto() {

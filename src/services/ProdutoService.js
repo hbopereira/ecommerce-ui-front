@@ -10,8 +10,8 @@ async function salvarProduto(produto) {
     }).then(response => {
         alert("salvo com sucesso !");
         return response;
-    }).catch(erro => {
-        return erro;
+    }).catch((erro) => {
+        throw erro.response.data;
     })
 }
 
@@ -33,7 +33,7 @@ async function editarProduto(){
 }
 
 async function excluirProduto(){
-    
+
 }
 
 
