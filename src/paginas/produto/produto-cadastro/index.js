@@ -2,19 +2,70 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button } from 'bootstrap-4-react';
 import Header from '../../../componentes/layout/Header';
 import ProdutoService from '../../../services/ProdutoService';
+import SecaoService from '../../../services/SecaoService';
+import SubSecaoService from '../../../services/SubSecaoService';
+
+
+const valoresIniciaisProduto = {
+    descricao: '', valven: ''
+}
+
 export default function ProdutoCadastro() {
 
-    const [produto, setProduto] = useState({ descricao: '', valven: '', tabelasPrecos: [] });
+    // states gerais
+    const [produto, setProduto] = useState(valoresIniciaisProduto);
+    const [secaoProduto, setSecaoProduto] = useState();
+    const [subSecaoProduto, setSubSecaoProduto] = useState();
 
+
+    //states para listar secoes e subsecoes na tela para selecionar.. 
+    const [secoes, setSecoes] = useState([]);
+    const [subSecoes, setSubSecoes] = useState([]);
+
+    function aoMudar(event) {
+        const { name, value } = event.target;
+        setProduto({ ...produto, [name]: value });
+    }
+
+    function aoMudarSelectSecao(event) {
+        const codSecaoSelecionado = event.target.value;
+        const secaoSelecionado = secoes.filter((sec) => sec.cod == codSecaoSelecionado)[0];
+        setSecaoProduto(secaoSelecionado);
+    }
+
+    function aoMudarSelectSubSecao(event) {
+        const codSubSecaoSelecionado = event.target.value;
+        const subSecaoSelecionado = subSecoes.filter((subsec) => subsec.cod == codSubSecaoSelecionado)[0];
+        setSubSecaoProduto(subSecaoSelecionado);
+    }
 
     async function salvarProduto(event) {
         event.preventDefault();
-        return await ProdutoService.salvarProduto(produto)
+        return await ProdutoService.salvarProduto(produto, secaoProduto, subSecaoProduto)
             .then(() => {
                 limparCamposFormCadastroProduto()
             }).catch((erro) => {
                 alert(JSON.stringify(erro));
             })
+    }
+
+
+    async function listarSecoes() {
+        await SecaoService.listarSecoes()
+            .then((response) => {
+                setSecoes(response.data.content);
+            }).catch((erro) => {
+                console.log(erro)
+            });
+    }
+
+    async function listarSubSecoes() {
+        await SubSecaoService.listarSubSecoes()
+            .then((response) => {
+                setSubSecoes(response.data.content);
+            }).catch((erro) => {
+                console.log(erro)
+            });
     }
 
     function preecherArrayTabelaPreco() {
@@ -24,6 +75,11 @@ export default function ProdutoCadastro() {
     function limparCamposFormCadastroProduto() {
         setProduto({ descricao: '', valven: '' });
     }
+
+    useEffect(() => {
+        listarSecoes();
+        listarSubSecoes()
+    }, []);
 
 
     return (
@@ -39,24 +95,40 @@ export default function ProdutoCadastro() {
                         <Col>
                             <Form.Group>
                                 <label className="float-left" htmlFor="exampleControlsInput1">Descrição</label>
-                                <Form.Input id="descricao" placeholder="descricao"
-                                    value={produto.descricao}
-                                    onChange={(event) => {
-                                        produto.descricao = event.target.value;
-                                        setProduto({ descricao: produto.descricao, valven: produto.valven });
-                                    }} />
+                                <Form.Input name="descricao" id="descricao" placeholder="descricao"
+                                    onChange={aoMudar} />
                             </Form.Group>
                         </Col>
                         <Col col="col lg-3">
                             <Form.Group>
                                 <label className="float-left" htmlFor="exampleControlsInput1">Valor de venda</label>
-                                <Form.Input id="valorvenda" placeholder="valor de venda"
-                                    value={produto.valven}
-                                    onChange={(event) => {
-                                        produto.valven = event.target.value;
-                                        setProduto({ descricao: produto.descricao, valven: produto.valven });
-                                    }} />
+                                <Form.Input name="valven" id="valorvenda" placeholder="valor de venda"
+                                    onChange={aoMudar} />
                             </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col >
+                            <label className="float-left" htmlFor="exampleControlsInput1">Seção</label>
+                            <select className="browser-default custom-select" name="secao" onChange={(e) => {
+                                aoMudarSelectSecao(e)
+                            }}>
+                                <option>Escolha</option>
+                                {secoes.map(secao => (
+                                    <option value={secao.cod}>{secao.descricao}</option>
+                                ))}
+                            </select>
+                        </Col>
+                        <Col >
+                            <label className="float-left" htmlFor="exampleControlsInput1">Sub-seção</label>
+                            <select className="browser-default custom-select" name="subsecao" onChange={(e) => {
+                                aoMudarSelectSubSecao(e)
+                            }}>
+                                <option>Escolha</option>
+                                {subSecoes.map(subsecao => (
+                                    <option value={subsecao.cod}>{subsecao.descricao}</option>
+                                ))}
+                            </select>
                         </Col>
                     </Row>
                     <Form.Group>
