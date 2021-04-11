@@ -11,12 +11,10 @@ const valoresIniciaisProduto = {
 }
 
 export default function ProdutoCadastro() {
-
     // states gerais
     const [produto, setProduto] = useState(valoresIniciaisProduto);
     const [secaoProduto, setSecaoProduto] = useState();
     const [subSecaoProduto, setSubSecaoProduto] = useState();
-
 
     //states para listar secoes e subsecoes na tela para selecionar.. 
     const [secoes, setSecoes] = useState([]);
@@ -48,7 +46,6 @@ export default function ProdutoCadastro() {
                 alert(JSON.stringify(erro));
             })
     }
-
 
     async function listarSecoes() {
         await SecaoService.listarSecoes()
