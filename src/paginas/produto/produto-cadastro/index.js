@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button } from 'bootstrap-4-react';
+import ListTabelasPreco from '../../../componentes/layout/ListTabelasPreco';
+import ModalSalvarTabelaPreco from '../../../componentes/layout/ModalSalvarTabelaPreco';
 import Header from '../../../componentes/layout/Header';
 import ProdutoService from '../../../services/ProdutoService';
 import SecaoService from '../../../services/SecaoService';
@@ -39,12 +41,22 @@ export default function ProdutoCadastro() {
 
     async function salvarProduto(event) {
         event.preventDefault();
-        return await ProdutoService.salvarProduto(produto, secaoProduto, subSecaoProduto)
-            .then(() => {
-                limparCamposFormCadastroProduto()
-            }).catch((erro) => {
-                alert(JSON.stringify(erro));
-            })
+        if (validarCampos()) {
+            return await ProdutoService.salvarProduto(produto, secaoProduto, subSecaoProduto)
+                .then(() => {
+                    limparCamposFormCadastroProduto();
+                    localStorage.setItem("tabelasPreco", '');
+                    localStorage.setItem("i", '');
+                }).catch((erro) => {
+                    alert(JSON.stringify(erro));
+                })
+        }
+    }
+
+    function validarCampos() {
+        if (produto.descricao != '' && produto.valven != '') {
+            return true
+        }
     }
 
     async function listarSecoes() {
@@ -65,9 +77,6 @@ export default function ProdutoCadastro() {
             });
     }
 
-    function preecherArrayTabelaPreco() {
-
-    }
 
     function limparCamposFormCadastroProduto() {
         setProduto({ descricao: '', valven: '' });
@@ -132,6 +141,8 @@ export default function ProdutoCadastro() {
                         <label className="float-left" htmlFor="exampleControlsFile1">Foto do produto</label>
                         <Form.File id="fotoproduto" />
                     </Form.Group>
+                    <br />
+                    <ModalSalvarTabelaPreco />
                     <br />
 
                     <Button className="float-left" success as="input" type="submit" value="Salvar" />

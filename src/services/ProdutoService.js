@@ -3,13 +3,18 @@ import api from './api';
 async function salvarProduto(produto, secaoProduto, subSecaoProduto) {
     let secao = { cod: '' };
     let subSecao = { cod: '' };
+    let tabelasPreco = [];
+    if (localStorage.getItem('tabelasPreco')) {
+        tabelasPreco = JSON.parse(localStorage.getItem('tabelasPreco'));
+    }
     secaoProduto != undefined ? secao.cod = secaoProduto.cod : secao = null;
     subSecaoProduto != undefined ? subSecao.cod = subSecaoProduto.cod : subSecao = null;
     const produtoASalvar = {
         descricao: produto.descricao,
         valven: produto.valven,
         secao: secao,
-        subsecao: subSecao
+        subsecao: subSecao,
+        tabelasPrecos: tabelasPreco
     }
     await api('/produtos/salvar', {
         method: 'POST',
