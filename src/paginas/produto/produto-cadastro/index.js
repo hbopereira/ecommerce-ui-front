@@ -7,7 +7,6 @@ import Geral from '../../../services/Geral';
 import ProdutoService from '../../../services/ProdutoService';
 import SecaoService from '../../../services/SecaoService';
 import SubSecaoService from '../../../services/SubSecaoService';
-import { createBrotliCompress } from 'zlib';
 
 
 const valoresIniciaisProduto = {
@@ -28,7 +27,7 @@ export default function ProdutoCadastro() {
     const [secoes, setSecoes] = useState([]);
     const [subSecoes, setSubSecoes] = useState([]);
 
-    // arrays auxiliares para receber aos cores e os tamanhos
+    // arrays auxiliares para receber aos cores e os tamanhos do produto
     let coresProduto = [];
     let tamanhosProduto = [];
 
