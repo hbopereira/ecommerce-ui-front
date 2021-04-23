@@ -7,6 +7,7 @@ import Geral from '../../../services/Geral';
 import ProdutoService from '../../../services/ProdutoService';
 import SecaoService from '../../../services/SecaoService';
 import SubSecaoService from '../../../services/SubSecaoService';
+import { createBrotliCompress } from 'zlib';
 
 
 const valoresIniciaisProduto = {
@@ -19,9 +20,30 @@ export default function ProdutoCadastro() {
     const [secaoProduto, setSecaoProduto] = useState();
     const [subSecaoProduto, setSubSecaoProduto] = useState();
 
+    // states para listar cores e tamanhos para selecionar
+    const [coresParaExibicao, setCoresParaExibicao] = useState([]);
+    const [tamanhosParaExibicao, setTamanhosParaExibicao] = useState([]);
+
     //states para listar secoes e subsecoes na tela para selecionar.. 
     const [secoes, setSecoes] = useState([]);
     const [subSecoes, setSubSecoes] = useState([]);
+
+    // arrays auxiliares para receber aos cores e os tamanhos
+    let coresProduto = [];
+    let tamanhosProduto = [];
+
+    async function salvarProduto(event) {
+        event.preventDefault();
+        if (validarCampos()) {
+            return await ProdutoService.salvarProduto(produto, secaoProduto, subSecaoProduto)
+                .then(() => {
+                    limparCamposFormCadastroProduto();
+                    Geral.limparTabelaPrecoLocalStorage();
+                }).catch((erro) => {
+                    alert(JSON.stringify(erro));
+                })
+        }
+    }
 
     function aoMudar(event) {
         const { name, value } = event.target;
@@ -40,27 +62,6 @@ export default function ProdutoCadastro() {
         setSubSecaoProduto(subSecaoSelecionado);
     }
 
-    async function salvarProduto(event) {
-        event.preventDefault();
-        if (validarCampos()) {
-            return await ProdutoService.salvarProduto(produto, secaoProduto, subSecaoProduto)
-                .then(() => {
-                    limparCamposFormCadastroProduto();
-                    Geral.limparTabelaPrecoLocalStorage();
-                }).catch((erro) => {
-                    alert(JSON.stringify(erro));
-                })
-        }
-    }
-
-    function validarCampos() {
-        if (produto.descricao != '' && produto.valven != '') {
-            return true
-        } else {
-            alert("campos obrigatorios não foram preenchidos !");
-        }
-    }
-
     async function listarSecoes() {
         await SecaoService.listarSecoes()
             .then((response) => {
@@ -77,6 +78,34 @@ export default function ProdutoCadastro() {
             }).catch((erro) => {
                 console.log(erro)
             });
+    }
+
+    function validarCampos() {
+        if (produto.descricao != '' && produto.valven != '') {
+            return true
+        }
+    }
+
+    function adicionarCores(codigoCor) {
+        const cor = {
+            cod: codigoCor
+        }
+        coresProduto.push(cor);
+    }
+
+    function adicionarTamanhos(codigoTamanho) {
+        const tamanho = {
+            cod: codigoTamanho
+        }
+        tamanhosProduto.push(tamanho);
+    }
+
+    async function listarCores() {
+
+    }
+
+    async function listarTamanhos() {
+
     }
 
 
@@ -151,11 +180,30 @@ export default function ProdutoCadastro() {
                                 ))}
                             </select>
                         </Col>
+                        <Col>
+                            <label className="float-left" htmlFor="exampleControlsInput1">Cor</label>
+                            <select className="browser-default custom-select" name="subsecao" >
+                                <option>Escolha</option>
+
+                            </select>
+                        </Col>
+                        <Col>
+                            <label className="float-left" htmlFor="exampleControlsInput1">Tamanho</label>
+                            <select className="browser-default custom-select" name="subsecao"
+                            >
+                                <option>Escolha</option>
+
+                            </select>
+                        </Col>
                     </Row>
-                    <Form.Group>
-                        <label className="float-left" htmlFor="exampleControlsFile1">Foto do produto</label>
-                        <Form.File id="fotoproduto" />
-                    </Form.Group>
+                    <Row>
+                        <Col col="md-4">
+                            <Form.Group>
+                                <label className="float-left" htmlFor="exampleControlsFile1">Foto do produto</label>
+                                <Form.File id="fotoproduto" />
+                            </Form.Group>
+                        </Col>
+                    </Row>
                     <ModalSalvarTabelaPreco />
                     <Button className="float-left" success as="input" type="submit" value="Salvar" />
                     <Button className="float-left" onClick={limparCamposFormCadastroProduto} warning as="input" type="reset" value="Cancelar" />

@@ -10,11 +10,11 @@ const ListTabelasPreco = (props) => {
 
             <Table striped bordered hover size="sm" responsive>
                 <thead>
-                        <tr>
+                    <tr>
                         <th>Descricao</th>
                         <th>Valor venda</th>
                         <th>Estoque</th>
-                        <th></th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,8 +24,9 @@ const ListTabelasPreco = (props) => {
                             <td>{tab.valven}</td>
                             <td>{tab.quantidadeEstoque}</td>
                             <td>
-                                <Button warning as="input" type="submit" value="Editar" />
-                                <Button danger as="input" type="submit" value="Excluir" />
+                                <Button info as="input" type="submit" value="E" />
+                                <Button warning as="input" type="submit" value="E" />
+                                <Button danger as="input" type="submit" value="E" />
                             </td>
                         </tr>
                     ))}
