@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Button } from 'bootstrap-4-react';
-import ListTabelasPreco from '../../../componentes/layout/ListTabelasPreco';
+import { NavLink } from 'react-router-dom'
+import { Container, Row, Col, Form, Button, Breadcrumb } from 'bootstrap-4-react';
 import ModalSalvarTabelaPreco from '../../../componentes/layout/ModalSalvarTabelaPreco';
 import Header from '../../../componentes/layout/Header';
+import Geral from '../../../services/Geral';
 import ProdutoService from '../../../services/ProdutoService';
 import SecaoService from '../../../services/SecaoService';
 import SubSecaoService from '../../../services/SubSecaoService';
@@ -45,8 +46,7 @@ export default function ProdutoCadastro() {
             return await ProdutoService.salvarProduto(produto, secaoProduto, subSecaoProduto)
                 .then(() => {
                     limparCamposFormCadastroProduto();
-                    localStorage.setItem("tabelasPreco", '');
-                    localStorage.setItem("i", '');
+                    Geral.limparTabelaPrecoLocalStorage();
                 }).catch((erro) => {
                     alert(JSON.stringify(erro));
                 })
@@ -56,6 +56,8 @@ export default function ProdutoCadastro() {
     function validarCampos() {
         if (produto.descricao != '' && produto.valven != '') {
             return true
+        } else {
+            alert("campos obrigatorios não foram preenchidos !");
         }
     }
 
@@ -92,10 +94,21 @@ export default function ProdutoCadastro() {
         <>
             <Header />
             <br />
-            <br />
             <h2>Cadastro de Produto</h2>
             <br />
             <Container>
+                <Breadcrumb>
+                    <Breadcrumb.Item>
+                        <NavLink to="/">
+                            <a>Home</a>
+                        </NavLink>
+                    </Breadcrumb.Item>
+                    <Breadcrumb.Item active aria-current="page">
+                        <NavLink to="produto-listagem-adm">
+                            <a>Produtos</a>
+                        </NavLink>
+                    </Breadcrumb.Item>
+                </Breadcrumb>
                 <Form onSubmit={salvarProduto}>
                     <Row>
                         <Col>
@@ -141,10 +154,7 @@ export default function ProdutoCadastro() {
                         <label className="float-left" htmlFor="exampleControlsFile1">Foto do produto</label>
                         <Form.File id="fotoproduto" />
                     </Form.Group>
-                    <br />
                     <ModalSalvarTabelaPreco />
-                    <br />
-
                     <Button className="float-left" success as="input" type="submit" value="Salvar" />
                     <Button className="float-left" onClick={limparCamposFormCadastroProduto} warning as="input" type="reset" value="Cancelar" />
                 </Form>

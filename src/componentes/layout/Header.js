@@ -6,7 +6,7 @@ export default function Header() {
 
     return (
         <>
-            <Navbar expand="lg" dark bg="primary" mb="3">
+            <Navbar expand="lg" light style={{ backgroundColor: '#e3f2fd' }} fixed="top" mb="3">
                 <Navbar.Brand href="#">Logo Empresa</Navbar.Brand>
                 <Navbar.Toggler target="#navbarColor2" />
                 <Collapse navbar id="navbarColor2">
