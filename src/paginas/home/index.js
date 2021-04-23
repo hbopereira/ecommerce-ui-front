@@ -17,7 +17,11 @@ export default function Home() {
             <h4>Produtos em Destaque</h4>
             <br />
             <Container>
-                <CardProdutos />
+                <Container>
+                    <Container>
+                        <CardProdutos />
+                    </Container>
+                </Container>
             </Container>
         </>
     )
