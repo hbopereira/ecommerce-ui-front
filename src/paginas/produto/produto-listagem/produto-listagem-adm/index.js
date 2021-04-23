@@ -10,7 +10,7 @@ export default function ProdutoListagemAdm() {
             <br />
             <br />
             <br />
-            <h2>Listagem de Produtos</h2>
+            <h3>Listagem de Produtos</h3>
             <br />
             <CardProdutos />
 
